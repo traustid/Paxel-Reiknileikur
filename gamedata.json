@@ -1,0 +1,43 @@
+[
+	{
+		"level": "easy",
+		"numbers": [
+			5
+		]
+	},
+	{
+		"level": "easy",
+		"numbers": [
+			4
+		]
+	},
+	{
+		"level": "medium",
+		"numbers": [
+			3,
+			3
+		]
+	},
+	{
+		"level": "medium",
+		"numbers": [
+			3,
+			2,
+			1
+		]
+	},
+	{
+		"level": "hard",
+		"numbers": [
+			6,
+			2
+		]
+	},
+	{
+		"level": "hard",
+		"numbers": [
+			5,
+			2
+		]
+	}
+]
