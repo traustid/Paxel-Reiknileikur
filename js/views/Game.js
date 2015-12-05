@@ -21,6 +21,8 @@ define(function(require){
 			}, this));
 
 			this.startApp();
+
+			this.$el.addClass('app-initialized');
 		},
 
 		startApp: function() {
@@ -29,22 +31,37 @@ define(function(require){
 
 		startGame: function() {
 			this.gameIsDone = false;
-			console.log('byLevel.length = '+this.collection.byLevel(this.gameLevel).length);
+			console.log('byLevel: '+this.collection.byLevel(this.gameLevel).length);
 			this.currentGameIndex = Math.floor(Math.random()*this.collection.byLevel(this.gameLevel).length);
-			console.log('currentGameIndex = '+this.currentGameIndex);
+			console.log('currentGameIndex: '+this.currentGameIndex);
 			this.currentGame = this.collection.byLevel(this.gameLevel)[this.currentGameIndex];
+			console.log('currentGame: '+this.currentGame);
 
 			this.$el.addClass('initialized');
+			this.$el.removeClass('game-hidden');
 
 			this.render();
 		},
 
 		events: {
+			'click .paxel-button': 'paxelClick',
+			'click .menu-button': 'menuButtonClick',
 			'click .restart-button': 'restartButtonClick',
+			'click .svg.crown': 'nextGameClick',
 			'click .solution-check-button': 'solutionCheckButtonClick',
 			'click .math-problem .solution-check': 'solutionCheckButtonClick',
 			'mousemove': 'mouseMoveHandler',
-			'click .symbols .symbol .hook': 'symbolMouseHandler'
+			'click .symbols .symbol .hook': 'symbolMouseHandler',
+			'click .undo-button': 'symbolRemove'
+		},
+
+		paxelClick: function() {
+			if (document.referrer.toLowerCase().indexOf('paxel123.com') == -1) {
+				window.parent.location.href = 'http://www.paxel123.com';
+			}
+			else {
+				history.go(-1);
+			}
 		},
 
 		appSize: {
@@ -61,15 +78,24 @@ define(function(require){
 				if (symbolsCount == this.currentGame.get('numbers')[0]) {
 					this.gameDone();
 				}
+				else {
+					this.gameFail();
+				}
 			}
 			if (gameLevel == 'medium') {
 				if (symbolsCount == this.getSum(this.currentGame.get('numbers'))) {
 					this.gameDone();
 				}
+				else {
+					this.gameFail();
+				}
 			}
 			if (gameLevel == 'hard') {
 				if (symbolsCount == this.getSubtraction(this.currentGame.get('numbers'))) {
 					this.gameDone();
+				}
+				else {
+					this.gameFail();
 				}
 			}
 		},
@@ -79,6 +105,11 @@ define(function(require){
 
 			if (symbolsCount > 0) {
 				this.$el.find('.math-problem .solution-check').addClass('visible');
+				this.$el.find('.undo-button').addClass('visible');
+			}
+			else {
+				this.$el.find('.math-problem .solution-check').removeClass('visible');
+				this.$el.find('.undo-button').removeClass('visible');
 			}
 
 			this.$el.find('.math-problem .number.result').removeClass('number-added');
@@ -118,7 +149,48 @@ define(function(require){
 		gameDone: function() {
 			this.$el.addClass('game-done');
 			this.gameIsDone = true;
+
+			setTimeout(_.bind(function() {
+				this.nextGameClick();
+			}, this), 2000);
 		},
+
+		gameFail: function() {
+			this.$el.addClass('game-fail');
+			setTimeout(_.bind(function() {
+				this.$el.removeClass('game-fail');
+			}, this), 2000);
+		},
+
+		symbolRemove: function(event) {
+			if (this.$el.find('.needle-container .thread-container .symbol').length > 0) {
+				var lastSymbol = $(this.$el.find('.needle-container .thread-container .symbol:last-child')[0]);
+
+				var symbolOffset = lastSymbol.offset();
+
+				this.$el.find('.symbols').append(lastSymbol);
+				lastSymbol.removeClass('added');
+
+				var symbolsOffset = this.$el.find('.symbols').offset();
+
+				lastSymbol.css({
+					top: symbolOffset.top-symbolsOffset.top,
+					left: symbolOffset.left-symbolsOffset.left
+				});
+
+				lastSymbol.animate({
+					top: lastSymbol.data('inity'),
+					left: lastSymbol.data('initx')
+				}, {
+					complete: _.bind(function() {
+						this.updateSolution();
+					}, this)
+				});
+			}
+		},
+
+		symbolsAnimOffsetX: -45,
+		symbolsAnimOffsetY: -10,
 
 		symbolMouseHandler: function(event) {
 			var target = $(event.currentTarget).closest('.symbol');
@@ -139,15 +211,15 @@ define(function(require){
 					var animator = new PathAnimator(path);
 					this.threadContainer.append(target);
 
-					var pathEnd = this.thread.find('path')[0].getPointAtLength(this.thread.find('path')[0].getTotalLength()-(50*this.threadContainer.find('.symbol.added').length)-50);
+					var pathEnd = this.thread.find('path')[0].getPointAtLength(this.thread.find('path')[0].getTotalLength()-(this.symbolsGap*this.threadContainer.find('.symbol.added').length)-(this.symbolsGap-10));
 
 					animator.start(
 						0.7,
 						_.bind(function(point, angle) {
-							if (point.x < pathEnd.x-36) {
+							if (point.x < pathEnd.x-6) {
 								target.css({
-									top: point.y-6,
-									left: point.x-38
+									left: point.x+this.symbolsAnimOffsetX,
+									top: point.y+this.symbolsAnimOffsetY
 								});
 							}
 						}, this),
@@ -198,13 +270,17 @@ define(function(require){
 			this.alignThreadSymbols();
 		},
 
+		symbolsOffsetX: -10,
+		symbolsOffsetY: -10,
+		symbolsGap: 55,
+
 		alignThreadSymbols: function() {
 			var count = 1;
 			var path = this.thread.find('path')[0];
 			_.each(this.threadContainer.find('.symbol.added'), _.bind(function(symbol) {
 				$(symbol).css({
-					left: path.getPointAtLength(path.getTotalLength()-(50*count)-50).x,
-					top: path.getPointAtLength(path.getTotalLength()-(50*count)-38).y
+					left: path.getPointAtLength(path.getTotalLength()-(this.symbolsGap*count)).x+this.symbolsOffsetX,
+					top: path.getPointAtLength(path.getTotalLength()-(this.symbolsGap*count)).y+this.symbolsOffsetY
 				});
 				count++;
 			}, this));
@@ -214,7 +290,19 @@ define(function(require){
 			this.checkSolution();
 		},
 
+		nextGameClick: function() {
+			this.$el.removeClass('game-done');
+			this.$el.addClass('game-hidden');
+			setTimeout(_.bind(function() {
+				this.startGame();
+			}, this), 400);
+		},
+
 		restartButtonClick: function() {
+			this.render();
+		},
+
+		menuButtonClick: function() {
 			this.$el.removeClass('initialized');
 			this.$el.removeClass('game-done');
 

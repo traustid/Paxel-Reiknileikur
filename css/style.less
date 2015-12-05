@@ -1,11 +1,13 @@
 @import 'mixins.less';
+@import 'lang.less';
 
 body, html {
 	margin: 0;
 
 	font-family: 'Bubblegum Sans', cursive;
 
-	background: #424143;
+/*	background: #424143;*/
+	background: #fff;
 }
 
 @keyframes hook_fade {
@@ -25,7 +27,7 @@ body, html {
 	width: 1200px;
 	height: 898px;
 
-	background-image: url('../img/game-back.png');
+	background-image: url('../img/game-back-paxel.png');
 	background-repeat: no-repeat;
 	background-position: center;
 	background-size: cover;
@@ -38,6 +40,70 @@ body, html {
 	width: 100%;
 	height: 100%;
 
+	opacity: 0;
+	transition: all 400ms ease-in-out;
+
+	.paxel-logo {
+		display: block;
+
+		position: absolute;
+
+		left: 60px;
+		top: 2px;
+
+		width: 187px;
+		height: 55px;
+
+		background-image: url('../img/paxel-logo.png');
+
+		.transition(all 200ms ease-in-out);
+
+		z-index: 10;
+
+		cursor: pointer;
+
+		&:hover {
+			.transform(rotate(3deg));
+		}
+	}
+
+	.frame-buttons {
+		position: absolute;
+
+		top: 15px;
+		right: 90px;
+
+		z-index: 10;
+
+		a {
+			display: inline-block;
+
+			padding: 15px 20px;
+
+			color: #fff;
+			font-size: 22px;
+			text-decoration: none;
+
+			background-image: url('../img/frame-button-back.png');
+			background-repeat: no-repeat;
+			background-position: center;
+
+			cursor: pointer;
+
+			.transition(all 200ms ease-in-out);
+
+			&:hover {
+				.transform(rotate(2deg));
+			}
+
+			&:last-child {
+				&:hover {
+					.transform(rotate(-3deg));
+				}
+			}
+		}
+	}
+
 	.game-content {
 		width: 100%;
 		height: 100%;
@@ -45,6 +111,10 @@ body, html {
 		opacity: 0;
 	
 		.transition(all 400ms ease-in-out);
+	}
+
+	&.app-initialized {
+		opacity: 1;
 	}
 
 	&.initialized {
@@ -55,12 +125,18 @@ body, html {
 		}
 
 		.game-menu {
-    		visibility: hidden;
-	    	opacity: 0;
+			visibility: hidden;
+			opacity: 0;
 		}
 	}
 
-	&.game-done {
+	&.game-hidden {
+		.game-content {
+			opacity: 0;
+		}
+	}
+
+	&.game-done, &.game-fail {
 		cursor: auto;
 	}
 
@@ -75,10 +151,10 @@ body, html {
 		.transform(translate(-50%, -50%));
 		.transition(all 400ms ease-in-out);
 
-    	visibility: visible;
-    	opacity: 1;
+		visibility: visible;
+		opacity: 1;
 
-    	.transition-delay(0s);
+		.transition-delay(0s);
 
 		.menu-item {
 			display: block;
@@ -95,7 +171,7 @@ body, html {
 	.math-problem {
 		position: absolute;
 
-		top: 100px;
+		top: 50px;
 		left: 100px;
 
 		font-size: 70px;
@@ -139,11 +215,16 @@ body, html {
 		}
 
 		.solution-check {
+			position: relative;
+
+			top: 10px;
+
 			display: inline-block;
 
 			margin-left: 10px;
 
 			color: #CAEB70;
+			font-size: 115px;
 
 			cursor: pointer;
 
@@ -175,8 +256,8 @@ body, html {
 
 				position: absolute;
 
-				top: 7px;
-				left: 27px;
+				top: 12px;
+				left: 38px;
 
 				width: 15px;
 				height: 15px;
@@ -201,78 +282,83 @@ body, html {
 	}
 
 	.symbol {
-		width: 73px;
-		height: 113px;
+/*
+		width: 105px;
+		height: 173px;
+*/
+		width: 95px;
+		height: 157px;
 
 		background-repeat: no-repeat;
 		background-position: 0 10px;
+		background-size: 95px 147px;
 
 		&.symbol-1 {
-			background-image: url('../img/symbols/symbol-01.png');
+			background-image: url('../img/symbols/symbol-01.png?2');
 		}
 
 		&.symbol-2 {
-			background-image: url('../img/symbols/symbol-02.png');
+			background-image: url('../img/symbols/symbol-02.png?2');
 		}
 
 		&.symbol-3 {
-			background-image: url('../img/symbols/symbol-03.png');
+			background-image: url('../img/symbols/symbol-03.png?2');
 		}
 
 		&.symbol-4 {
-			background-image: url('../img/symbols/symbol-04.png');
+			background-image: url('../img/symbols/symbol-04.png?2');
 		}
 
 		&.symbol-5 {
-			background-image: url('../img/symbols/symbol-05.png');
+			background-image: url('../img/symbols/symbol-05.png?2');
 		}
 
 		&.symbol-6 {
-			background-image: url('../img/symbols/symbol-06.png');
+			background-image: url('../img/symbols/symbol-06.png?2');
 		}
 
 		&.symbol-7 {
-			background-image: url('../img/symbols/symbol-07.png');
+			background-image: url('../img/symbols/symbol-07.png?2');
 		}
 
 		&.symbol-8 {
-			background-image: url('../img/symbols/symbol-08.png');
+			background-image: url('../img/symbols/symbol-08.png?2');
 		}
 
 		&.symbol-9 {
-			background-image: url('../img/symbols/symbol-09.png');
+			background-image: url('../img/symbols/symbol-09.png?2');
 		}
 
 		&.symbol-10 {
-			background-image: url('../img/symbols/symbol-10.png');
+			background-image: url('../img/symbols/symbol-10.png?2');
 		}
 
 		&.symbol-11 {
-			background-image: url('../img/symbols/symbol-11.png');
+			background-image: url('../img/symbols/symbol-11.png?2');
 		}
 
 		&.symbol-12 {
-			background-image: url('../img/symbols/symbol-12.png');
+			background-image: url('../img/symbols/symbol-12.png?2');
 		}
 
 		&.symbol-13 {
-			background-image: url('../img/symbols/symbol-13.png');
+			background-image: url('../img/symbols/symbol-13.png?2');
 		}
 
 		&.symbol-14 {
-			background-image: url('../img/symbols/symbol-14.png');
+			background-image: url('../img/symbols/symbol-14.png?2');
 		}
 
 		&.symbol-15 {
-			background-image: url('../img/symbols/symbol-15.png');
+			background-image: url('../img/symbols/symbol-15.png?2');
 		}
 
 		&.symbol-16 {
-			background-image: url('../img/symbols/symbol-16.png');
+			background-image: url('../img/symbols/symbol-16.png?2');
 		}
 
 		&.symbol-17 {
-			background-image: url('../img/symbols/symbol-17.png');
+			background-image: url('../img/symbols/symbol-17.png?2');
 		}
 	}
 
@@ -340,7 +426,7 @@ body, html {
 	}
 }
 
-.restart-button {
+.menu-button {
 	display: block;
 
 	position: absolute;
@@ -351,13 +437,75 @@ body, html {
 	width: 51px;
 	height: 54px;
 	
-	background: url('../img/restart-button.png');
+	background-image: url('../img/menu-button.png');
+	background-position: center;
+	background-repeat: no-repeat;
 
 	transition: all 200ms ease-in-out;
 
 	cursor: pointer;
 
 	z-index: 300;
+
+	&:hover {
+		.transform(rotate(-6deg) scale(1.1));
+	}
+}
+
+.undo-button {
+	display: inline-block;
+
+	width: 64px;
+	height: 54px;
+
+	margin-left: 40px;
+	
+	background: url('../img/undo-button.png');
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: 50px, 42px;
+
+	transition: all 200ms ease-in-out;
+
+	cursor: pointer;
+
+	opacity: 0;
+
+	z-index: 300;
+
+	&.visible {
+		opacity: 1;
+	}
+
+	&:hover {
+		.transform(rotate(-10deg) scale(1.1));
+	}
+}
+
+.restart-button {
+	display: block;
+
+	position: absolute;
+
+	top: 100px;
+	right: 190px;
+
+	width: 51px;
+	height: 54px;
+	
+	background: url('../img/restart-button.png');
+
+	transition: all 200ms ease-in-out;
+
+	cursor: pointer;
+
+	opacity: 0;
+
+	z-index: 300;
+
+	.initialized & {
+		opacity: 1;
+	}
 
 	&:hover {
 		.transform(rotate(10deg) scale(1.1));
@@ -388,39 +536,82 @@ body, html {
 	}
 }
 
-.crown-container {
+.sun-container {
 	position: absolute;
 
-    top: 60px;
-    left: 60px;
-    right: 60px;
-    bottom: 60px;
+	top: 60px;
+	left: 60px;
+	right: 60px;
+	bottom: 60px;
 
-    background-color: rgba(66, 65, 67, 0.73);
+	background-color: rgba(66, 65, 67, 0.73);
 
-    visibility: hidden;
-    opacity: 0;
+	visibility: hidden;
+	opacity: 0;
 
-    .transition(opacity 500ms ease-in-out visibility 0s linear 500ms);
+	transition: opacity 500ms ease-in-out, visibility 0s linear 500ms;
+	-webkit-transition: opacity 500ms ease-in-out, visibility 0s linear 500ms;
+	-moz-transition: opacity 500ms ease-in-out, visibility 0s linear 500ms;
+	-o-transition: opacity 500ms ease-in-out, visibility 0s linear 500ms;
 
-    .game-done & {
-    	visibility: visible;
-    	opacity: 1;
+	.game-fail & {
+		visibility: visible;
+		opacity: 1;
 
-    	.transition-delay(0s);
-    }
+		.transition-delay(0s);
+	}
 
-	.svg.crown {
+	.svg.sun {
 		position: absolute;
+
 		top: 50%;
 		left: 50%;
 
-		margin-top: -250px;
-		margin-left: -250px;
+		width: 430px;
+		height: 310px;
+
+		margin-top: -155px;
+		margin-left: -215px;
+
+		.animation(sun-animation 1s infinite linear);
+	}
+}
+
+.crown-container {
+	position: absolute;
+
+	top: 60px;
+	left: 60px;
+	right: 60px;
+	bottom: 60px;
+
+	background-color: rgba(66, 65, 67, 0.73);
+
+	visibility: hidden;
+	opacity: 0;
+
+	transition: opacity 500ms ease-in-out, visibility 0s linear 500ms;
+	-webkit-transition: opacity 500ms ease-in-out, visibility 0s linear 500ms;
+	-moz-transition: opacity 500ms ease-in-out, visibility 0s linear 500ms;
+	-o-transition: opacity 500ms ease-in-out, visibility 0s linear 500ms;
+
+	.game-done & {
+		visibility: visible;
+		opacity: 1;
+
+		.transition-delay(0s);
+	}
+
+	.svg.crown {
+		position: absolute;
+		
+		top: 50%;
+		left: 50%;
 
 		width: 500px;
 		height: 500px;
-		
+
+		.translate(-50%, -50%);
 
 		.layer {
 			position: absolute;
@@ -493,6 +684,30 @@ body, html {
 }
 
 @keyframes check-tease {
+
+	0% {
+		.transform(rotate(0deg));
+	}
+
+	25% {
+		.transform(rotate(-15deg));
+	}
+	
+	50% {
+		.transform(rotate(0deg));
+	}
+	
+	75% {
+		.transform(rotate(15deg));
+	}
+	
+	100% {
+		.transform(rotate(0deg));
+	}
+
+}
+
+@keyframes sun-animation {
 
 	0% {
 		.transform(rotate(0deg));
